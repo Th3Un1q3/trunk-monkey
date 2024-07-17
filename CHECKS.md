@@ -1,6 +1,6 @@
 # Monkey Checks
 
-List of scenarous and checks that trunk monkey has to perform.
+List of scenarous and checks that trunk monkey has to implement.
 
 ## Duplicated effort
 
