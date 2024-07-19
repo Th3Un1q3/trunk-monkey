@@ -1,0 +1,35 @@
+diff --git a/file_to_delete.format b/file_to_delete.format
+deleted file mode 100644
+index 93a0950..0000000
+--- a/file_to_delete.format
++++ /dev/null
+@@ -1,1 +0,0 @@
+-Content of the file that is being deleted
+\ No newline at end of file
+diff --git a/newly_added_file.txt b/newly_added_file.txt
+new file mode 100644
+index 0000000..c909b1b
+--- /dev/null
++++ b/newly_added_file.txt
+@@ -0,0 +1,2 @@
++First line
++Second line
+\ No newline at end of file
+diff --git a/initial_file_name.txt b/new_file_name.txt
+similarity index 100%
+rename from initial_file_name.txt
+rename to new_file_name.txt
+diff --git a/changed_file.txt b/changed_file.txt
+index 757ac30..864fbb1 100644
+--- a/changed_file.txt
++++ b/changed_file.txt
+@@ -8,7 +8,8 @@ Objective is to check assumptions on AI model details and development nuances at
+
+ previous line after empty
+ unchanged line
+-remove line
++
++added line
+ 
+ following line after empty 2
+ last not changed line
