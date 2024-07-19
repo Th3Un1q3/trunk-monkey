@@ -1,0 +1,56 @@
+{
+  "project": {
+    "name": "Math",
+    "description": "Math library"
+  },
+  "commits": [
+    {
+      "date": "2019-01-01T05:30:00Z",
+      "message": "Initial commit",
+      "author": "Jared",
+      "diff": "diff --git a/README.md b/README.md\nnew file mode 100644\nindex 0000000..2447eeb\n--- /dev/null\n+++ b/README.md\n@@ -0,0 +1,3 @@\n+# MathAI\n+\n+This is math library"
+    },
+    {
+      "date": "2019-01-01T06:15:00Z",
+      "message": "Update README.md with project goals",
+      "author": "Jared",
+      "diff": "diff --git a/README.md b/README.md\nindex 2447eeb..acbe1f2\n--- a/README.md\n+++ b/README.md\n@@ -1,3 +1,5 @@\n+# MathAI\n+        \n+This is math library\n++\n++This project aims to provide a comprehensive set of mathematical functions for various use cases."
+    },
+    {
+      "date": "2019-01-01T08:30:00Z",
+      "message": "add combine function",
+      "author": "Alice",
+      "diff": "diff --git a/utils/add.ts b/utils/add.ts\nnew file mode 100644\nindex 0000000..2ce2861\n--- /dev/null\n+++ b/utils/add.ts\n@@ -0,0 +1,3 @@\n+export function add(a: number, b: number): number {\n+  return a + b\n+}\n\\ No newline at end of file"
+    },
+    {
+      "date": "2019-01-02T11:00:00Z",
+      "message": "Add documentation for add function",
+      "author": "Alice",
+      "diff": "diff --git a/utils/add.ts b/utils/add.ts\nindex 2ce2861..1f23a0b\n--- a/utils/add.ts\n+++ b/utils/add.ts\n@@ -1,5 +1,8 @@\n+export function add(a: number, b: number): number {\n+  /**\n+   * Adds two numbers together.\n+   * @param a The first number.\n+   * @param b The second number.\n+   * @returns The sum of a and b.\n+   */\n+  return a + b\n+}\n\\ No newline at end of file"
+    },
+    {
+      "date": "2019-01-03T14:45:00Z",
+      "message": "Add array sum function",
+      "author": "Alice",
+      "diff": "diff --git a/utils/array_sum.ts b/utils/array_sum.ts\nnew file mode 100644\nindex 0000000..9a9f329\n--- /dev/null\n+++ b/utils/array_sum.ts\n@@ -0,0 +1,5 @@\n+import {add} from \"./add\";\n+\n+export function array_sum(array: number[]): number {\n+  return array.reduce(add, 0)\n+}"
+    },
+    {
+      "date": "2019-01-04T10:30:00Z",
+      "message": "Add basic unit tests for add_array function",
+      "author": "Alice",
+      "diff": "diff --git a/utils/array_sum.spec.ts b/utils/array_sum.spec.ts\nnew file mode 100644\nindex 0000000..4b93654\n--- /dev/null\n+++ b/utils/array_sum.spec.ts\n@@ -0,0 +1,10 @@\n+import { array_sum } from './array_sum';\n+\n+describe('array_sum', () => {\n+  it('should return 0 for an empty array', () => {\n+    expect(array_sum([])).toBe(0);\n+  });\n+  it('should return the sum of the elements of the array', () => {\n+    expect(array_sum([1, 2, 3])).toBe(6);\n+  });\n+});\n\\ No newline at end of file"
+    },
+    {
+      "date": "2019-01-04T10:35:00Z",
+      "message": "Add documentation to array_sum function",
+      "author": "Alice",
+      "diff": "diff --git a/utils/array_sum.ts b/utils/array_sum.ts\nindex 9a9f329..06e4fe1 100644\n--- a/utils/array_sum.ts\n+++ b/utils/array_sum.ts\n@@ -1,5 +1,10 @@\n import {add} from \"./add\";\n \n+/**\n+ * Sums all the elements of an numerical array\n+ * @param array\n+ * @returns the sum of the elements of the array\n+ */\n export function array_sum(array: number[]): number {\n   return array.reduce(add, 0)\n }\n\\ No newline at end of file"
+    },
+    {
+      "date": "2019-01-05T09:00:00Z",
+      "message": "add math helper",
+      "author": "Jared",
+      "diff": "diff --git a/helpers/math-operations.ts b/helpers/math-operations.ts\nnew file mode 100644\nindex 0000000..b651663\n--- /dev/null\n+++ b/helpers/math-operations.ts\n@@ -0,0 +1,14 @@\n+export class MathOperations {\n+  static add(a: number, b: number): number {\n+    return a + b\n+  }\n+  static subtract(a: number, b: number): number {\n+    return a - b\n+  }\n+  static multiply(a: number, b: number): number {\n+    return a * b\n+  }\n+  static divide(a: number, b: number): number {\n+    return a / b\n+  }\n+}"
+    }
+  ]
+}

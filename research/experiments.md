@@ -46,9 +46,18 @@ Assumption is that model should use the content of the file to provide prompt wi
 - **Next Steps**: Tune prompt to avoid redundancy in the output while keeping accuracy.
 Try to use more complex examples where many things are happening in the codebase.
 
+**Experiment 2:**
+- **Input**: [complex git history with diffs](./examples/duplicates_extended/context.json)
+- **Prompt**: "Analyze recent commit and output if there is a duplication happens, explain it and advice how and who needs to address it."
+- **Result**: [conversation](./conversations/duplicates_extended_with_instruction_and_prompt.md)
+- **Summary**: The model was able to identify the duplication, who is involved and how approach addressing it.
+- **Next Steps**: Consider output and tag involved developers so that they can be notified about the issue.
 
-## Prompts
+## Prompts and instructions
 **Objective**: Define the pattern of prompts that will be used to extract the necessary information from the codebase.
+
+## Cost estimates
+**Objective**: Estimate the cost of running the model in terms of time and resources.
 
 ## Architecture
 **Objective**: Find out the optimal way to:
