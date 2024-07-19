@@ -36,7 +36,15 @@ Assumption is that model should use the content of the file to provide prompt wi
 }
 ```
 
+#### Results
 
+**Experiment 1:**
+- **Input**: [simple git history with diffs](./examples/duplicates_simple/context.json)
+- **Prompt**: "Analyze recent commit and output if there is a duplication happens, explain it and advice how and who needs to address it."
+- **Result**: [conversation](./conversations/duplicates_simple_with_instruction_and_prompt.md)
+- **Summary**: The model was able to identify the duplication in the codebase and provide an explanation and recommendations for addressing it.
+- **Next Steps**: Tune prompt to avoid redundancy in the output while keeping accuracy.
+Try to use more complex examples where many things are happening in the codebase.
 
 
 ## Prompts
