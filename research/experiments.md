@@ -11,6 +11,13 @@ Objective is to check assumptions on AI model details and development nuances at
 3. Capture the result
 4. Define new experiment or add more examples
 
+### Define optimal size of the context
+#### Overview
+Taking into account the model's capabilities and the complexity of the codebase, it is important to determine the optimal size of the context that will be used to train the model.
+Determine:
+- The number of commits to include in the context
+- Edge conditions
+
 ### JSON git history with diffs
 #### Overview
 The model will be trained on the git history of the codebase. The git history will be represented as a JSON object.
