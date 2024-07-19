@@ -60,6 +60,13 @@ Try to use more complex examples where many things are happening in the codebase
 - **Summary**: The model was able to identify the duplication, who is involved and how approach addressing it.
 - **Next Steps**: Consider output and tag involved developers so that they can be notified about the issue.
 
+**Experiment 3:**
+- **Input**: [complex git history with diffs](./examples/doughnut_commits_50/context.json)
+- **Prompt**: "Analyze recent commits and identify 3 biggest struggles authors had."
+- **Result**: [conversation](./conversations/longer_history_struggle.md)
+- **Summary**: The model was able to identify the struggles faced by authors in recent commits.
+- **Next Steps**: Find a way to introduce history granularity, otherwise the model struggles with bigger files.
+
 ## Prompts and instructions
 **Objective**: Define the pattern of prompts that will be used to extract the necessary information from the codebase.
 
