@@ -5,12 +5,18 @@ Objective is to check assumptions on AI model details and development nuances at
 ## Necessary model inputs
 **Objective**: Define proper context input(content, format) for optimal model performance.
 
+**Methodology**:
+1. Define and upload examples
+2. Run a prompt that refers to the content of the file
+3. Capture the result
+4. Define new experiment or add more examples
+
 ### JSON git history with diffs
-**Overview**:
+#### Overview
 The model will be trained on the git history of the codebase. The git history will be represented as a JSON object.
 Assumption is that model should use the content of the file to provide prompt with accurate context.
 
-**Example**:
+**Example format:**
 ```json
 {
   "commits": [
@@ -30,6 +36,9 @@ Assumption is that model should use the content of the file to provide prompt wi
 }
 ```
 
+
+
+
 ## Prompts
 **Objective**: Define the pattern of prompts that will be used to extract the necessary information from the codebase.
 
@@ -42,3 +51,4 @@ Assumption is that model should use the content of the file to provide prompt wi
 - Implement multi tenancy(every user has its own model instance or share the same model instance)
 - User defined configuration(manifest or config file vs inputs)
 - Use vector store
+- Use function to output results

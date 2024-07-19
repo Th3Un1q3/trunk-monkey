@@ -5,19 +5,19 @@
   },
   "commits": [
     {
-      "date": "2019-01-01T00:00:00Z",
+      "date": "2019-01-01T08:30:00Z",
       "message": "add combine function",
       "author": "Alice",
       "diff": "diff --git a/utils/add.ts b/utils/add.ts\nnew file mode 100644\nindex 0000000..2ce2861\n--- /dev/null\n+++ b/utils/add.ts\n@@ -0,0 +1,3 @@\n+export function add(a: number, b: number): number {\n+  return a + b\n+}\n\\ No newline at end of file"
     },
     {
-      "date": "2019-01-01T00:15:00Z",
+      "date": "2019-01-03T14:45:00Z",
       "message": "Add array sum function",
       "author": "Alice",
       "diff": "diff --git a/utils/array_sum.ts b/utils/array_sum.ts\nnew file mode 100644\nindex 0000000..9a9f329\n--- /dev/null\n+++ b/utils/array_sum.ts\n@@ -0,0 +1,5 @@\n+import {add} from \"./add\";\n+\n+export function array_sum(array: number[]): number {\n+  return array.reduce(add, 0)\n+}"
     },
     {
-      "date": "2019-01-02T00:00:00Z",
+      "date": "2019-01-05T09:00:00Z",
       "message": "add math helper",
       "author": "Jared",
       "diff": "diff --git a/helpers/math-operations.ts b/helpers/math-operations.ts\nnew file mode 100644\nindex 0000000..b651663\n--- /dev/null\n+++ b/helpers/math-operations.ts\n@@ -0,0 +1,14 @@\n+export class MathOperations {\n+  static add(a: number, b: number): number {\n+    return a + b\n+  }\n+  static subtract(a: number, b: number): number {\n+    return a - b\n+  }\n+  static multiply(a: number, b: number): number {\n+    return a * b\n+  }\n+  static divide(a: number, b: number): number {\n+    return a / b\n+  }\n+}"
