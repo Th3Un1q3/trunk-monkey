@@ -1,0 +1,16 @@
+{
+  "name": "get_commit_history",
+  "description": "Take the history of commits, from most recent to older one",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "number_of_commits": {
+        "type": "number",
+        "description": "Number of commits to be fetched."
+      }
+    },
+    "required": [
+      "number_of_commits"
+    ]
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "name": "get_blame_on_file",
+  "description": "Receive who made changes to a specific file in the repository. And when the changes were made.",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "file_path": {
+        "type": "string",
+        "description": "Relative path to the file in the repository."
+      }
+    },
+    "required": [
+      "file_path"
+    ]
+  }
+}
