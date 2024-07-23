@@ -1,2 +1,3 @@
 /.idea/
 /research/current_diff.txt
+/src/.env.test
