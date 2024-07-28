@@ -11,4 +11,6 @@ docker-compose up --build -d
 
 # Access the container
 docker-compose exec app bash
+
+python run_check.py
 ```
