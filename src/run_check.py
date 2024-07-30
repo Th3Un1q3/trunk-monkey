@@ -5,5 +5,5 @@ load_dotenv()
 load_dotenv('.env.test')
 
 MonkeyCheck(
-    check_prompt="How frequently should I commit to trunk? And how would you characterize our commit frequency?"
+    check_prompt="How frequently should I commit to trunk? And how would you characterize our commit frequency, review larger timeframe?"
 ).execute_request()

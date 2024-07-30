@@ -5,5 +5,6 @@ services:
     working_dir: /app
     volumes:
       - ./src:/app
+      - ../doughnut:/subject
 #    command: python run_check.py
     command: /bin/sh -c "while true; do sleep 1000; done"
