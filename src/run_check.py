@@ -1,9 +1,9 @@
 from dotenv import load_dotenv
-from monkey_check import MonkeyCheck
+from check.monkey_check import MonkeyCheck
 
 load_dotenv()
 load_dotenv('.env.test')
 
 MonkeyCheck(
-    check_prompt="How frequently should I commit to trunk? And how would you characterize our commit frequency, review larger timeframe?"
+    check_prompt="By looking at recent commits can you tell what is the most spread struggle is?"
 ).execute_request()
