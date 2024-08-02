@@ -1,6 +1,6 @@
 import json
 import subprocess
-
+import os
 
 class GitHistoryExtractor:
     DEFAULT_NUMBER_OF_COMMITS = 20
@@ -15,7 +15,7 @@ class GitHistoryExtractor:
                 capture_output=True,
                 text=True,
                 check=True,
-                cwd='/subject'
+                cwd=os.getenv('TRUNK_MONKEY_SOURCES_ROOT', '.')
             )
 
             commits = []
@@ -36,8 +36,10 @@ class GitHistoryExtractor:
     def get_definition():
         return {
             "name": "get_git_commit_history",
-            "description": "Take the history of commits, from most recent to older ones. Returns list of commits, "
-                           "with author name, message, date, and hash.",
+            "description": "Take the history of commits, from most recent to older ones. Returns list of commits. "
+                           "Allows to see at glance the history of the project, "
+                           "with author name, message, date, and hash."
+                           "Commit hashes can be used in other tools to fetch diffs or blame.",
             "parameters": {
                 "type": "object",
                 "properties": {
