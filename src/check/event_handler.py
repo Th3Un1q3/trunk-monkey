@@ -1,10 +1,14 @@
 import json
 from openai import AssistantEventHandler
 from typing_extensions import override
+
+from extractors.git_diff import GitDiffExtractor
 from extractors.git_history import GitHistoryExtractor
 
 
 class MonkeyCheckEventHandler(AssistantEventHandler):
+    EXTRACT_TOOLS = [GitHistoryExtractor, GitDiffExtractor]
+
     def __init__(self, client):
         super().__init__()
         self.client = client
@@ -21,13 +25,13 @@ class MonkeyCheckEventHandler(AssistantEventHandler):
         tool_outputs = []
 
         for tool in data.required_action.submit_tool_outputs.tool_calls:
-            if tool.function.name == GitHistoryExtractor.get_definition().get("name"):
-                print(f"Fetching git history with {tool.function.arguments} commits")
+            for extractor in MonkeyCheckEventHandler.EXTRACT_TOOLS:
+                if tool.function.name == extractor.get_definition().get("name"):
+                    print(f"Executing {tool.function.name} with {tool.function.arguments}")
+                    extractor_instance = extractor(**json.loads(tool.function.arguments))
+                    output = extractor_instance.run()
+                    tool_outputs.append({"tool_call_id": tool.id, "output": output})
 
-                number_of_commits = json.loads(tool.function.arguments)["number_of_commits"]
-                git_history_extractor = GitHistoryExtractor(number_of_commits)
-                git_history = git_history_extractor.run()
-                tool_outputs.append({"tool_call_id": tool.id, "output": git_history})
 
         # Submit all tool_outputs at the same time
         self.submit_tool_outputs(tool_outputs, run_id)

@@ -36,16 +36,19 @@ class MonkeyCheck:
 
     @retry(wait=wait_random_exponential(multiplier=1, max=60), stop=stop_after_attempt(5))
     def update_assistant(self):
+        def to_tool_definition(extractor):
+            return {
+                "type": "function",
+                "function": extractor.get_definition()
+            }
+
+        tools = list(map(to_tool_definition, MonkeyCheckEventHandler.EXTRACT_TOOLS))
+
         self.client.beta.assistants.update(
             assistant_id=self.assistant_id,
             instructions=COMMON_INSTRUCTION,
             model=self.model,
-            tools=[
-                {
-                    "type": "function",
-                    "function": GitHistoryExtractor.get_definition()
-                }
-            ]
+            tools=tools
         )
 
     @retry(wait=wait_random_exponential(multiplier=1, max=60), stop=stop_after_attempt(5))
