@@ -5,7 +5,7 @@ services:
     working_dir: /app
     volumes:
       - ./src:/app
-      - ../doughnut:/subject
+      - .:/subject
     command: /bin/sh -c "while true; do sleep 1000; done"
     environment:
       - TRUNK_MONKEY_SOURCES_ROOT=/subject

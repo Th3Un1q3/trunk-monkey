@@ -2,8 +2,10 @@ import json
 import subprocess
 import os
 
+
 class GitHistoryExtractor:
     DEFAULT_NUMBER_OF_COMMITS = 20
+    COMMIT_OUTPUT_SEPARATOR = ">>>COMMIT<<<"
 
     def __init__(self, number_of_commits):
         self.number_of_commits = number_of_commits or GitHistoryExtractor.DEFAULT_NUMBER_OF_COMMITS
@@ -11,7 +13,7 @@ class GitHistoryExtractor:
     def run(self):
         try:
             result = subprocess.run(
-                ["git", "log", f"-n {self.number_of_commits}", "--pretty=format:%H|%cd|%an|%s"],
+                ["git", "log", f"-n {self.number_of_commits}", f"--pretty=format:{GitHistoryExtractor.COMMIT_OUTPUT_SEPARATOR}%H|%cd|%an|%s", "--numstat"],
                 capture_output=True,
                 text=True,
                 check=True,
@@ -19,13 +21,22 @@ class GitHistoryExtractor:
             )
 
             commits = []
-            for line in result.stdout.splitlines():
-                commit_hash, timestamp, author, message = line.split('|', 3)
+
+            raw_commits = [commit for commit in result.stdout.split(GitHistoryExtractor.COMMIT_OUTPUT_SEPARATOR) if commit != '']
+
+            for commit in raw_commits:
+                commit_info, *stats = commit.split('\n')
+
+                if commit_info == '':
+                    continue
+
+                commit_hash, timestamp, author, message = commit_info.split('|', 3)
                 commits.append({
                     "commit_hash": commit_hash,
                     "timestamp": timestamp,
                     "author": author,
-                    "message": message
+                    "message": message,
+                    "changes": "\n".join(stats) if stats else "No changes in this commit."
                 })
             return json.dumps(commits)
         except subprocess.CalledProcessError as e:
