@@ -15,6 +15,7 @@ You are an observer of trunk-based development practices.
 - Provide professional and weighted response, be specific and concise. Use code snippets and file references if necessary.
 - Instead of asking user if to do something proactively do so: execute functions to gather information and provide insights.
 - When you are referencing something prefer to call related change contributors by their names.
+- Explore existing code base in your filestore to provide more accurate insights.
 """
 GPT_MODEL = "gpt-4o-mini"
 
@@ -43,12 +44,16 @@ class MonkeyCheck:
             }
 
         tools = list(map(to_tool_definition, MonkeyCheckEventHandler.EXTRACT_TOOLS))
+        tools.append({"type": "file_search"})
+
+        tool_resources={"file_search": {"vector_store_ids": [os.getenv("TRUNK_MONKEY_VECTOR_STORE_ID")]}}
 
         self.client.beta.assistants.update(
             assistant_id=self.assistant_id,
             instructions=COMMON_INSTRUCTION,
             model=self.model,
-            tools=tools
+            tools=tools,
+            tool_resources=tool_resources
         )
 
     @retry(wait=wait_random_exponential(multiplier=1, max=60), stop=stop_after_attempt(5))

@@ -3,9 +3,15 @@ import fnmatch
 import subprocess
 import os
 import json
+import hashlib
 
 load_dotenv()
 load_dotenv('.env.test')
+
+def calculate_md5(input_string):
+    md5_hash = hashlib.md5()
+    md5_hash.update(input_string.encode('utf-8'))
+    return md5_hash.hexdigest()
 
 def split_files_by_chunks(files_index, chunk_size, cwd):
     print(f"reading files: {len(files_index)}")
@@ -66,7 +72,7 @@ def upload_codebase():
 
         complete_chunk = {
             "meta": {
-                "description": f"Alphabetically sorted files chunk. Each file is a key-value pair with file_path as key and content as value.",
+                "description": f"Alphabetically sorted files chunk. Presents data from codebase. Each file is a key-value pair with file_path as key and content as value.",
                 "first_file": chunk[0]["file_path"],
                 "last_file": chunk[-1]["file_path"],
                 "files_count": len(chunk)
@@ -74,7 +80,11 @@ def upload_codebase():
             "files": {file["file_path"]: format_file(file) for file in chunk}
         }
 
-        print(f"Uploading chunk of {complete_chunk} files")
+        chunk_hash = calculate_md5(json.dumps(complete_chunk))
+
+        with open(f"{chunk_hash}.json", 'w') as f:
+            json.dump(complete_chunk, f)
+
 
 
 
