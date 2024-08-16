@@ -59,9 +59,8 @@ class MonkeyCheck:
             content=content
         )
 
-    def execute_request(self):
+    def execute(self):
         self.update_assistant()
-
 
         print('Open Conversation in Sandbox',
               f'https://platform.openai.com/playground/assistants?assistant={self.assistant_id}&mode=assistant&thread={self.thread().id}')
