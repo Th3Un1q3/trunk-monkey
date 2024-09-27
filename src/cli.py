@@ -79,8 +79,9 @@ def check_all():
     # ).execute()
 
     MonkeyCheck(
-        check_prompt="Analyze commits from July 5. Conclude were they:"
-        "- granular and atomic"
+        check_prompt="Review recent commits log and code."
+                     "Conclude if commits follow trunk based development best practices and implement following properties:"
+        "- granular and atomic, and isolated"
         "- well documented"
         "- change is well structured"
         "- well tested"
@@ -88,8 +89,6 @@ def check_all():
 
     click.echo('Checks complete.')
     click.echo('Passed 2/8 ❌')
-
-
 
 cli.add_command(init)
 cli.add_command(sync)

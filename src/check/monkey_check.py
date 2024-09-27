@@ -29,6 +29,7 @@ class MonkeyCheck:
         self.assistant_id = assistant_id or self.config.assistant_id
         self._thread = None
 
+    @property
     @retry(wait=wait_random_exponential(multiplier=1, max=60), stop=stop_after_attempt(5))
     def thread(self):
         if not self._thread:
@@ -60,7 +61,7 @@ class MonkeyCheck:
     @retry(wait=wait_random_exponential(multiplier=1, max=60), stop=stop_after_attempt(5))
     def send_message(self, role, content):
         return self.client.beta.threads.messages.create(
-            thread_id=self.thread().id,
+            thread_id=self.thread.id,
             role=role,
             content=content
         )
@@ -69,7 +70,7 @@ class MonkeyCheck:
         self.update_assistant()
 
         print('Open Conversation in Sandbox',
-              f'https://platform.openai.com/playground/assistants?assistant={self.assistant_id}&mode=assistant&thread={self.thread().id}')
+              f'https://platform.openai.com/playground/assistants?assistant={self.assistant_id}&mode=assistant&thread={self.thread.id}')
 
         self.send_message(
             role="user",
@@ -77,13 +78,11 @@ class MonkeyCheck:
         )
 
         with self.client.beta.threads.runs.stream(
-                thread_id=self.thread().id,
+                thread_id=self.thread.id,
                 assistant_id=self.assistant_id,
                 model=self.model,
                 event_handler=MonkeyCheckEventHandler(client=self.client),
         ) as stream:
             stream.until_done()
-
-        print("Request completed")
 
         print()
