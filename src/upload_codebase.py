@@ -1,14 +1,11 @@
-from dotenv import load_dotenv
 import fnmatch
 import subprocess
 import os
 import json
 import hashlib
-from openai import OpenAI
 from tenacity import retry, wait_random_exponential, stop_after_attempt
 
-load_dotenv()
-load_dotenv('.env.test')
+from helpers import get_target_directory_relative_path
 
 def calculate_md5(input_string):
     md5_hash = hashlib.md5()
@@ -44,7 +41,7 @@ def get_codebase_index():
         capture_output=True,
         text=True,
         check=True,
-        cwd=os.getenv('TRUNK_MONKEY_SOURCES_ROOT', '.')
+        cwd=get_target_directory_relative_path()
     )
     git_visible_files_list = result.stdout.splitlines()
     include_patterns = ['*']
@@ -64,33 +61,9 @@ def get_codebase_index():
     file_index = sorted(final_file_list)
     return file_index
 
-client = OpenAI()
-
-@retry(wait=wait_random_exponential(multiplier=1, max=60), stop=stop_after_attempt(5))
-def get_codebase_store():
-    store_id = os.getenv("TRUNK_MONKEY_VECTOR_STORE_ID")
-
-    if store_id:
-        try:
-            store = client.beta.vector_stores.retrieve(store_id)
-            print(f"Retrieved existing store with ID: {store_id}")
-            return store
-        except Exception as e:
-            print(f"Error retrieving store with ID {store_id}: {e}")
-
-    try:
-        store = client.beta.vector_stores.create(
-            name="trunk-monkey-codebase_v1",
-        )
-        print(f"Created new store with ID: {store.id}")
-        return store
-    except Exception as e:
-        print(f"Error creating new store: {e}")
-        raise
-
 def index_codebase_content(file_index):
     chunk_size = 0.5 * 1024 * 1024  # 0.5 MB
-    for chunk in split_files_by_chunks(file_index, chunk_size, os.getenv('TRUNK_MONKEY_SOURCES_ROOT', '.')):
+    for chunk in split_files_by_chunks(file_index, chunk_size, get_target_directory_relative_path()):
         def format_file(file):
             return {
                 "content": file["content"],
@@ -115,24 +88,47 @@ def index_codebase_content(file_index):
 
         yield codebase_index_chapter_name
 
+class UploadCodebaseCommand:
+    def __init__(self, client):
+        self.client = client
 
-def upload_codebase():
-    store = get_codebase_store()
-    file_index = get_codebase_index()
+    @retry(wait=wait_random_exponential(multiplier=1, max=60), stop=stop_after_attempt(5))
+    def get_codebase_store(self):
+        store_id = os.getenv("TRUNK_MONKEY_VECTOR_STORE_ID")
 
-    print(file_index)
+        if store_id:
+            try:
+                store = self.client.beta.vector_stores.retrieve(store_id)
+                print(f"Retrieved existing store with ID: {store_id}")
+                return store
+            except Exception as e:
+                print(f"Error retrieving store with ID {store_id}: {e}")
 
-    chunked_codebase = index_codebase_content(file_index)
+        try:
+            store = self.client.beta.vector_stores.create(
+                name="trunk-monkey-codebase_v1",
+            )
+            print(f"Created new store with ID: {store.id}")
+            return store
+        except Exception as e:
+            print(f"Error creating new store: {e}")
+            raise
 
-    file_streams = [open(path, "rb") for path in chunked_codebase]
+    def run(self):
+        store = self.get_codebase_store()
+        file_index = get_codebase_index()
 
-    file_batch = client.beta.vector_stores.file_batches.upload_and_poll(
-        vector_store_id=store.id, files=file_streams
-    )
+        print(file_index)
 
-    print(file_batch.status)
-    print(file_batch.file_counts)
+        chunked_codebase = index_codebase_content(file_index)
+
+        file_streams = [open(path, "rb") for path in chunked_codebase]
+
+        file_batch = self.client.beta.vector_stores.file_batches.upload_and_poll(
+            vector_store_id=store.id, files=file_streams
+        )
+
+        print(file_batch.status)
+        print(file_batch.file_counts)
 
 
-
-upload_codebase()

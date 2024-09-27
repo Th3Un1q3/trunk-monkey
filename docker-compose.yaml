@@ -1,8 +1,9 @@
 version: '3.8'
 services:
-  app:
+  dev:
     build: .
     working_dir: /app
+    privileged: true
     volumes:
       - ./src:/app
       - .:/subject

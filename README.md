@@ -8,8 +8,11 @@ This AI sniffs out code smells, anti-patterns, and duplicates in your main branc
 # Build and run the container
 docker-compose up --build -d
 
-# Access the container
-docker-compose exec app bash
+# Init the project
+docker-compose exec dev python cli.py init
 
-python run_check.py
+docker-compose exec dev python cli.py sync
+
+docker-compose exec dev python cli.py check-all
+
 ```

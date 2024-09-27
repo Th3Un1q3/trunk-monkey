@@ -14,4 +14,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY ./src /app
 
-CMD ["python", "run_check.py"]
+CMD ["trunk_monkey", "init"]
