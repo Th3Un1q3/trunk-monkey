@@ -1,8 +1,31 @@
 # Architecture
 
 ## Current
-Experimental architecture is an assistant in [OpenAI playground](https://platform.openai.com/playground/assistants)(asst_HQwXDE72A6vX95BcR39j2Zq4). 
+```mermaid
+flowchart TD
+%% Nodes
+    A[User]
+    B[Assistant]
+    C[Thread]
+    D[Vector Store]
+    E[Local Functions]
+    F[Trunk-Monkey CLI]
+    G[CI Automation]
+    H[GitHub]
+    I[Slack]
 
+%% Edge connections between nodes
+    A --> |Runs| F
+    A --> |Commits and pushes| H
+    B --> |Searches| D 
+    B --> |Calls| E
+    C --> |Uses| B
+    F --> |Initiates| C
+    F --> |Uploads code to| D
+    G --> |Runs| F
+    G --> |Sends results to| I
+    H --> |Triggers| G
+```
 
 ## Design ideas
 - Automatically triggered checks
