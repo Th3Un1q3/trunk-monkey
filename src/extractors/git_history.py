@@ -20,7 +20,7 @@ class GitHistoryExtractor:
                 capture_output=True,
                 text=True,
                 check=True,
-                cwd=self.config.get_target_directory_relative_path()
+                cwd=self.config.sources_root_dir
             )
 
             commits = []

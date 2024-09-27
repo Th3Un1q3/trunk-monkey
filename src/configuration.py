@@ -3,6 +3,13 @@ import yaml
 from dotenv import load_dotenv
 
 class Config:
+    _instance = None
+
+    def __new__(cls, *args, **kwargs):
+        if not cls._instance:
+            cls._instance = super(Config, cls).__new__(cls)
+        return cls._instance
+
     def __init__(self):
         load_dotenv()
         load_dotenv('.env.test')
@@ -40,7 +47,8 @@ class Config:
             self._load_manifest()
         return self._project_name
 
-    def get_target_directory_relative_path(self):
+    @property
+    def sources_root_dir(self):
         return self.trunk_monkey_sources_root
 
     def get_api_key(self):

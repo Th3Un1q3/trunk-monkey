@@ -17,7 +17,7 @@ class GitDiffExtractor:
                 capture_output=True,
                 text=True,
                 check=True,
-                cwd=self.config.get_target_directory_relative_path()
+                cwd=self.config.sources_root_dir
             )
             return result.stdout
         except subprocess.CalledProcessError as e:

@@ -43,7 +43,7 @@ def get_codebase_index():
         capture_output=True,
         text=True,
         check=True,
-        cwd=config.get_target_directory_relative_path()
+        cwd=config.sources_root_dir
     )
     git_visible_files_list = result.stdout.splitlines()
     include_patterns = ['*']
@@ -65,7 +65,7 @@ def get_codebase_index():
 
 def index_codebase_content(file_index):
     chunk_size = 0.5 * 1024 * 1024  # 0.5 MB
-    for chunk in split_files_by_chunks(file_index, chunk_size, config.get_target_directory_relative_path()):
+    for chunk in split_files_by_chunks(file_index, chunk_size, config.sources_root_dir):
         def format_file(file):
             return {
                 "content": file["content"],
