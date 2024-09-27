@@ -1,26 +1,25 @@
-import click
+from distutils.sysconfig import project_base
 
-from dotenv import load_dotenv
+import click
 from check.monkey_check import MonkeyCheck
-from helpers import get_target_directory_relative_path
+from configuration import Config
 from open_ai_integration import OpenAIIntegration
 from upload_codebase import UploadCodebaseCommand
 import yaml
 import os
 from openai import OpenAI
 
-load_dotenv()
-load_dotenv('.env.test')
-
+config = Config()
 
 @click.group()
 def cli():
     pass
 
 @click.command()
-def init():
+@click.option('--project_name', prompt='Project Name', help='Name to be used to address the project.')
+def init(project_name):
     """Sets up manifest file for the project. Initiates assistant and vector store"""
-    manifest_path = os.path.join(get_target_directory_relative_path(), 'trunk_monkey_manifest.yml')
+    manifest_path = os.path.join(config.get_manifest_path())
 
     # throw error if manifest file already exists
     if os.path.exists(manifest_path):
@@ -32,7 +31,10 @@ def init():
 
     data = {
         'manifest_version' : '1.0',
-        'openai_config': OpenAIIntegration(client=OpenAI()).create_resources(),
+        'project_name': project_name,
+        'openai_config': OpenAIIntegration(client=OpenAI(
+            api_key=config.get_api_key()
+        )).create_resources(project_name),
     }
 
     click.echo('Creating manifest file...')
@@ -45,11 +47,10 @@ def init():
 def sync():
     """Upload the project's codebase to the vector store"""
     click.echo('Syncing project with the latest changes...')
-    UploadCodebaseCommand(
-        client=OpenAI()
-    ).run()
-    click.echo('Indexed code 50 KB.')
     click.echo('Uploading code...')
+    UploadCodebaseCommand(
+        client=OpenAI(api_key=config.get_api_key())
+    ).run()
     click.echo('Upload complete!')
     click.echo('Synchronization complete!')
 

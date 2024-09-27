@@ -1,11 +1,14 @@
 import subprocess
 import os
 
+from configuration import Config
+
 
 class GitDiffExtractor:
     def __init__(self, tail_commit_hash, head_commit_hash='HEAD'):
         self.tail_commit_hash = tail_commit_hash
         self.head_commit_hash = head_commit_hash
+        self.config = Config()
 
     def run(self):
         try:
@@ -14,7 +17,7 @@ class GitDiffExtractor:
                 capture_output=True,
                 text=True,
                 check=True,
-                cwd=os.getenv('TRUNK_MONKEY_SOURCES_ROOT', '.')
+                cwd=self.config.get_target_directory_relative_path()
             )
             return result.stdout
         except subprocess.CalledProcessError as e:

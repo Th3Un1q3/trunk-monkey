@@ -2,6 +2,8 @@ import json
 import subprocess
 import os
 
+from configuration import Config
+
 
 class GitHistoryExtractor:
     DEFAULT_NUMBER_OF_COMMITS = 20
@@ -9,6 +11,7 @@ class GitHistoryExtractor:
 
     def __init__(self, number_of_commits):
         self.number_of_commits = number_of_commits or GitHistoryExtractor.DEFAULT_NUMBER_OF_COMMITS
+        self.config = Config()
 
     def run(self):
         try:
@@ -17,7 +20,7 @@ class GitHistoryExtractor:
                 capture_output=True,
                 text=True,
                 check=True,
-                cwd=os.getenv('TRUNK_MONKEY_SOURCES_ROOT', '.')
+                cwd=self.config.get_target_directory_relative_path()
             )
 
             commits = []

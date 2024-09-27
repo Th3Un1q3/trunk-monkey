@@ -3,6 +3,7 @@ from openai import OpenAI
 from tenacity import retry, wait_random_exponential, stop_after_attempt
 from check.event_handler import MonkeyCheckEventHandler
 from extractors.git_history import GitHistoryExtractor
+from configuration import Config
 
 COMMON_INSTRUCTION = """
 # Your role
@@ -19,13 +20,13 @@ You are an observer of trunk-based development practices.
 """
 GPT_MODEL = "gpt-4o-mini"
 
-
 class MonkeyCheck:
-    def __init__(self, check_prompt, model=None, client=None, assistant_id=None):
+    def __init__(self, check_prompt, model=None, client=None, assistant_id=None, config=None):
+        self.config = config or Config()
         self.check_prompt = check_prompt
         self.model = model or GPT_MODEL
-        self.client = client or OpenAI()
-        self.assistant_id = assistant_id or os.getenv("TRUNK_MONKEY_ASSISTANT_ID")
+        self.client = client or OpenAI(api_key=self.config.get_api_key())
+        self.assistant_id = assistant_id or self.config.assistant_id
         self._thread = None
 
     @retry(wait=wait_random_exponential(multiplier=1, max=60), stop=stop_after_attempt(5))
@@ -46,7 +47,7 @@ class MonkeyCheck:
         tools = list(map(to_tool_definition, MonkeyCheckEventHandler.EXTRACT_TOOLS))
         tools.append({"type": "file_search"})
 
-        tool_resources={"file_search": {"vector_store_ids": [os.getenv("TRUNK_MONKEY_VECTOR_STORE_ID")]}}
+        tool_resources={"file_search": {"vector_store_ids": [self.config.vector_store_id]}}
 
         self.client.beta.assistants.update(
             assistant_id=self.assistant_id,
