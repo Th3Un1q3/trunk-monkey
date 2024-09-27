@@ -19,9 +19,12 @@ load_dotenv('.env.test')
 #     "- well tested"
 # ).execute()
 
-
-MonkeyCheck(
+check = MonkeyCheck(
     check_prompt="# Objective"
-    "Find if there are non explicit duplications between recent commits and pre-existing code."
+    "Check what was added/changed in the last commit."
+    "Using file search look if this change introduces duplication with existing code."
+    "Also check if there were missed opportunities to reuse existing code."
     "Provide actionable insights and recommendations."
-).execute()
+)
+
+check.execute()
