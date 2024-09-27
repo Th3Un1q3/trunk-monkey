@@ -46,15 +46,8 @@ def get_codebase_index():
         cwd=config.sources_root_dir
     )
     git_visible_files_list = result.stdout.splitlines()
-    include_patterns = ['*']
-    exclude_patterns = [
-        '*/src/generated/*',
-        '*.d.ts',
-        '*.jar',
-        'research/conversations/*',
-        'research/README.md',
-        'research/examples/*'
-    ]
+    include_patterns = config.include_file_patterns
+    exclude_patterns = config.exclude_file_patterns
     matched_files_list = []
     for pattern in include_patterns:
         matched_files_list.extend([file for file in git_visible_files_list if fnmatch.fnmatch(file, pattern)])

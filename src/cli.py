@@ -29,17 +29,21 @@ def init(project_name):
     click.echo('Initializing trunk monkey assistant instance...')
     click.echo('Initializing vector store...')
 
-    data = {
+    manifest_content = {
         'manifest_version' : '1.0',
         'project_name': project_name,
         'openai_config': OpenAIIntegration(client=OpenAI(
             api_key=config.get_api_key()
         )).create_resources(project_name),
+        'source_files': {
+            'include': ['*'],
+            "exclude": []
+        }
     }
 
     click.echo('Creating manifest file...')
     with open(manifest_path, 'w') as file:
-        yaml.dump(data, file, default_flow_style=False)
+        yaml.dump(manifest_content, file, default_flow_style=False)
 
     click.echo('Initialization complete!')
 
@@ -62,13 +66,13 @@ def check_all():
 
     MonkeyCheck(
         check_prompt="# Objective"
+                     ""
                      "Check what was added/changed in the last commit."
                      "Using file search look if this change introduces duplication with existing code."
                      "Also check if there were missed opportunities to reuse existing code."
                      "Provide actionable insights and recommendations."
     ).execute()
 
-    #
     # MonkeyCheck(
     #     check_prompt="By looking at recent commits can you tell what is the most spread and frequent struggle is?"
     #     "Take into account file changes and commit messages."

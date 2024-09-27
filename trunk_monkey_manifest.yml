@@ -3,3 +3,16 @@ openai_config:
   assistant_id: asst_eSKba2SJHK5YnINa4VPXdyi6
   vector_store_id: vs_zuuSw1k8kukEjcLE75zUUtmx
 project_name: Trunk Monkey Monorepo
+source_files:
+  exclude:
+    - '*/src/generated/*'
+    - '*.d.ts'
+    - '*.jar'
+    - 'research/conversations/*'
+    - 'research/README.md'
+    - 'research/examples/*'
+    - '*.jpg'
+    - '*.png'
+    - '*.jpeg'
+  include:
+    - '*'

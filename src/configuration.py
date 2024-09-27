@@ -11,6 +11,7 @@ class Config:
         return cls._instance
 
     def __init__(self):
+
         load_dotenv()
         load_dotenv('.env.test')
         self.trunk_monkey_sources_root = os.getenv('TRUNK_MONKEY_SOURCES_ROOT', '/subject')
@@ -19,6 +20,8 @@ class Config:
         self._assistant_id = None
         self._vector_store_id = None
         self._manifest_loaded = False
+        self._include_file_patterns = []
+        self._exclude_file_patterns = []
 
     def _load_manifest(self):
         if not self._manifest_loaded and os.path.exists(self.manifest_path):
@@ -27,6 +30,8 @@ class Config:
                 self._project_name = manifest.get('project_name')
                 self._assistant_id = manifest.get('openai_config', {}).get('assistant_id')
                 self._vector_store_id = manifest.get('openai_config', {}).get('vector_store_id')
+                self._include_file_patterns = manifest.get('source_files', {}).get('include', [])
+                self._exclude_file_patterns = manifest.get('source_files', {}).get('exclude', [])
             self._manifest_loaded = True
 
     @property
@@ -50,6 +55,18 @@ class Config:
     @property
     def sources_root_dir(self):
         return self.trunk_monkey_sources_root
+
+    @property
+    def include_file_patterns(self):
+        if not self._manifest_loaded:
+            self._load_manifest()
+        return self._include_file_patterns
+
+    @property
+    def exclude_file_patterns(self):
+        if not self._manifest_loaded:
+            self._load_manifest()
+        return self._exclude_file_patterns
 
     def get_api_key(self):
         return self.api_key
