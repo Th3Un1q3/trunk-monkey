@@ -77,20 +77,22 @@ class MonkeyCheck:
     def execute(self):
         self.update_assistant()
 
-        print('Open Conversation in Sandbox',
-              f'https://platform.openai.com/playground/assistants?assistant={self.assistant_id}&mode=assistant&thread={self.thread.id}')
-
         self.send_message(
             role="user",
             content=self.check_prompt
         )
 
+        event_handler = MonkeyCheckEventHandler(client=self.client)
+
         with self.client.beta.threads.runs.stream(
                 thread_id=self.thread.id,
                 assistant_id=self.assistant_id,
                 model=self.model,
-                event_handler=MonkeyCheckEventHandler(client=self.client),
+                event_handler=event_handler,
         ) as stream:
             stream.until_done()
 
-        print()
+        return {
+            'sandbox_url': f"https://platform.openai.com/playground/assistants?assistant={self.assistant_id}&mode=assistant&thread={self.thread.id}",
+            'thread_id': self.thread.id
+        }

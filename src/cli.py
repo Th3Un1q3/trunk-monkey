@@ -78,7 +78,7 @@ def check_all():
     #     "Analyze at least 50 commits."
     # ).execute()
 
-    MonkeyCheck(
+    result = MonkeyCheck(
         check_prompt="Review recent commits log and code."
                      "Conclude if commits follow trunk based development best practices and implement following properties:"
         "- granular and atomic, and isolated"
@@ -87,8 +87,8 @@ def check_all():
         "- well tested"
     ).execute()
 
-    click.echo('Checks complete.')
-    click.echo('Passed 2/8 ❌')
+    click.echo('Check complete!')
+    click.echo("View in sandbox: " + result['sandbox_url'])
 
 cli.add_command(init)
 cli.add_command(sync)
