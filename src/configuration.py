@@ -1,4 +1,6 @@
 import os
+from shutil import posix
+
 import yaml
 from dotenv import load_dotenv
 
@@ -11,12 +13,11 @@ class Config:
         return cls._instance
 
     def __init__(self):
-
         load_dotenv()
         load_dotenv('.env.test')
         self.trunk_monkey_sources_root = os.getenv('TRUNK_MONKEY_SOURCES_ROOT', '/subject')
         self.api_key = os.getenv('OPENAI_API_KEY')
-        self.manifest_path = os.path.join(self.trunk_monkey_sources_root, 'trunk_monkey_manifest.yml')
+        self._manifest_path = os.path.join(self.trunk_monkey_sources_root, 'trunk_monkey_manifest.yml')
         self._assistant_id = None
         self._vector_store_id = None
         self._manifest_loaded = False
@@ -68,8 +69,10 @@ class Config:
             self._load_manifest()
         return self._exclude_file_patterns
 
-    def get_api_key(self):
+    @property
+    def open_api_key(self):
         return self.api_key
 
-    def get_manifest_path(self):
-        return self.manifest_path
+    @property
+    def manifest_path(self):
+        return self._manifest_path

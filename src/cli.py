@@ -19,10 +19,8 @@ def cli():
 @click.option('--project_name', prompt='Project Name', help='Name to be used to address the project.')
 def init(project_name):
     """Sets up manifest file for the project. Initiates assistant and vector store"""
-    manifest_path = os.path.join(config.get_manifest_path())
-
     # throw error if manifest file already exists
-    if os.path.exists(manifest_path):
+    if os.path.exists(config.manifest_path):
         click.echo('Manifest file already exists. Exiting...')
         return
 
@@ -33,7 +31,7 @@ def init(project_name):
         'manifest_version' : '1.0',
         'project_name': project_name,
         'openai_config': OpenAIIntegration(client=OpenAI(
-            api_key=config.get_api_key()
+            api_key=config.open_api_key
         )).create_resources(project_name),
         'source_files': {
             'include': ['*'],
@@ -42,7 +40,7 @@ def init(project_name):
     }
 
     click.echo('Creating manifest file...')
-    with open(manifest_path, 'w') as file:
+    with open(config.manifest_path, 'w') as file:
         yaml.dump(manifest_content, file, default_flow_style=False)
 
     click.echo('Initialization complete!')
@@ -53,7 +51,7 @@ def sync():
     click.echo('Syncing project with the latest changes...')
     click.echo('Uploading code...')
     UploadCodebaseCommand(
-        client=OpenAI(api_key=config.get_api_key())
+        client=OpenAI(api_key=config.open_api_key)
     ).run()
     click.echo('Upload complete!')
     click.echo('Synchronization complete!')
@@ -64,14 +62,14 @@ def check_all():
     """Checks the project for code smells, anti-patterns, and duplicates"""
     click.echo('Checking project for code smells, anti-patterns, and duplicates...')
 
-    MonkeyCheck(
-        check_prompt="# Objective"
-                     ""
-                     "Check what was added/changed in the last commit."
-                     "Using file search look if this change introduces duplication with existing code."
-                     "Also check if there were missed opportunities to reuse existing code."
-                     "Provide actionable insights and recommendations."
-    ).execute()
+    # MonkeyCheck(
+    #     check_prompt="# Objective"
+    #                  ""
+    #                  "Check what was added/changed in the last commit."
+    #                  "Using file search look if this change introduces duplication with existing code."
+    #                  "Also check if there were missed opportunities to reuse existing code."
+    #                  "Provide actionable insights and recommendations."
+    # ).execute()
 
     # MonkeyCheck(
     #     check_prompt="By looking at recent commits can you tell what is the most spread and frequent struggle is?"
@@ -80,13 +78,13 @@ def check_all():
     #     "Analyze at least 50 commits."
     # ).execute()
 
-    # MonkeyCheck(
-    #     check_prompt="Analyze commits from July 5. Conclude were they:"
-    #     "- granular and atomic"
-    #     "- well documented"
-    #     "- change is well structured"
-    #     "- well tested"
-    # ).execute()
+    MonkeyCheck(
+        check_prompt="Analyze commits from July 5. Conclude were they:"
+        "- granular and atomic"
+        "- well documented"
+        "- change is well structured"
+        "- well tested"
+    ).execute()
 
     click.echo('Checks complete.')
     click.echo('Passed 2/8 ❌')

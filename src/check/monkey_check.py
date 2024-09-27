@@ -25,7 +25,7 @@ class MonkeyCheck:
         self.config = config or Config()
         self.check_prompt = check_prompt
         self.model = model or GPT_MODEL
-        self.client = client or OpenAI(api_key=self.config.get_api_key())
+        self.client = client or OpenAI(api_key=self.config.open_api_key)
         self.assistant_id = assistant_id or self.config.assistant_id
         self._thread = None
 
