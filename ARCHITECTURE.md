@@ -15,7 +15,7 @@ flowchart TD
     I[Slack]
 
 %% Edge connections between nodes
-    A --> |Runs| F
+    A --> |Runs locally| F
     A --> |Commits and pushes| H
     B --> |Searches| D 
     B --> |Calls| E
