@@ -17,7 +17,8 @@ docker run -v $(pwd):/subject trunk-monkey:beta sync
 # Run the checks
 docker run -v $(pwd):/subject trunk-monkey:beta check-all
 
-
+# Run individual checks
+docker run -v $(pwd):/subject trunk-monkey:beta check struggle
 
 # When you changing the source code, you can sync the source code again
 docker run -v $(pwd)/src:/app -v $(pwd):/subject trunk-monkey:beta check-all

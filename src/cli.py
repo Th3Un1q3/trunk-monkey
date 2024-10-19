@@ -13,6 +13,38 @@ from openai import OpenAI
 
 config = Config()
 
+checks = [
+    CheckDefinition(
+        check_id="deduplication",
+        prompt="Check what was added/changed in the last commit."
+               "Using file search look if this change introduces duplication with existing code."
+               "Also check if there were missed opportunities to reuse existing code."
+               "Provide actionable insights and recommendations."
+    ),
+    CheckDefinition(
+        check_id="struggle",
+        prompt="By looking at recent commits can you tell what is the most spread and frequent struggle is?"
+               "Take into account file changes and commit messages."
+               "Also analyze affected files from attached store."
+               "Analyze at least 30 commits."
+    ),
+    CheckDefinition(
+        check_id="trunk_based_dev",
+        prompt="""Review recent commits log and code.
+                   Conclude if commits follow trunk based development best practices and implement following properties:
+                   - granular and atomic, and isolated
+                   - well documented
+                   - change is well structured
+                   - well tested
+                   """
+    ),
+    CheckDefinition(
+        check_id="documentation_integrity",
+        prompt="Review changes from the last commit."
+               "Find what documentation is not reflecting what was changed by the commit."
+    ),
+]
+
 
 @click.group()
 def cli():
@@ -67,38 +99,6 @@ def check_all():
     """Checks the project for code smells, anti-patterns, and duplicates"""
     click.echo('Checking project for code smells, anti-patterns, and duplicates...')
 
-    checks = [
-        # CheckDefinition(
-        #     check_id="deduplication",
-        #     prompt="Check what was added/changed in the last commit."
-        #            "Using file search look if this change introduces duplication with existing code."
-        #            "Also check if there were missed opportunities to reuse existing code."
-        #            "Provide actionable insights and recommendations."
-        # ),
-        # CheckDefinition(
-        #     check_id="struggle",
-        #     prompt="By looking at recent commits can you tell what is the most spread and frequent struggle is?"
-        #            "Take into account file changes and commit messages."
-        #            "Also analyze affected files from attached store."
-        #            "Analyze at least 30 commits."
-        # ),
-        # CheckDefinition(
-        #     check_id="trunk_based_dev",
-        #     prompt="""Review recent commits log and code.
-        #            Conclude if commits follow trunk based development best practices and implement following properties:
-        #            - granular and atomic, and isolated
-        #            - well documented
-        #            - change is well structured
-        #            - well tested
-        #            """
-        # ),
-        CheckDefinition(
-            check_id="documentation_integrity",
-            prompt="Review changes from the last commit."
-                   "Find what documentation is not reflecting what was changed by the commit."
-        ),
-    ]
-
     thread_id = None
 
     for check in checks:
@@ -112,9 +112,27 @@ def check_all():
         click.echo("View in sandbox: " + result['sandbox_url'])
 
 
+@click.command()
+@click.argument('check_id')
+def check(check_id):
+    """Runs a single check based on the provided check_id"""
+    click.echo(f'Running check: {check_id}...')
+
+    check = next((c for c in checks if c.check_id == check_id), None)
+    if not check:
+        click.echo(f'Check with id {check_id} not found')
+
+    result = AssistantRunner(
+        prompt=check.prompt,
+    ).execute()
+
+    click.echo(f'Check complete: {check.check_id}')
+    click.echo("View in sandbox: " + result['sandbox_url'])
+
 cli.add_command(init)
 cli.add_command(sync)
 cli.add_command(check_all)
+cli.add_command(check)
 
 if __name__ == '__main__':
     cli()
