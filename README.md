@@ -5,14 +5,23 @@ This AI sniffs out code smells, anti-patterns, and duplicates in your main branc
 
 ## Development
 ```bash
-# Build and run the container
-docker-compose up --build -d
+# Build the image with cli
+docker buildx bake
 
 # Init the project
-docker-compose exec dev python cli.py init
+# Attach project you want to analyze as subject and initialize the project
+docker run -v $(pwd):/subject trunk-monkey:beta init
+# This going to create a `trunk_monkey_manifest.yml` file in the root of the project
 
-docker-compose exec dev python cli.py sync
 
-docker-compose exec dev python cli.py check-all
+# Synchronyze the source code
+docker run -v $(pwd):/subject trunk-monkey:beta sync
 
+# Run the checks
+docker run -v $(pwd):/subject trunk-monkey:beta check-all
+
+
+
+# When you changing the source code, you can sync the source code again
+docker run -v $(pwd)/src:/app -v $(pwd):/subject trunk-monkey:beta check-all
 ```
