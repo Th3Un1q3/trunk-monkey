@@ -5,16 +5,13 @@ This AI sniffs out code smells, anti-patterns, and duplicates in your main branc
 
 ## Development
 ```bash
-# Build the image with cli
+# Build the image with CLI
 docker buildx bake
 
-# Init the project
 # Attach project you want to analyze as subject and initialize the project
 docker run -v $(pwd):/subject trunk-monkey:beta init
-# This going to create a `trunk_monkey_manifest.yml` file in the root of the project
 
-
-# Synchronyze the source code
+# Synchronize the source code
 docker run -v $(pwd):/subject trunk-monkey:beta sync
 
 # Run the checks

@@ -3,11 +3,12 @@ from tenacity import retry, wait_random_exponential, stop_after_attempt
 from check.event_handler import MonkeyCheckEventHandler
 from configuration import Config
 
-COMMON_INSTRUCTION = """# Your role
+ASSISTANT_INSTRUCTION = """# Your role
 
 You are an observer of trunk-based development practices.
 
 # Context
+
 
 - You have access to the code base of a software project, consider searching for relevant files.
 - If this benefits you can request git history, git diffs and git blame.
@@ -26,23 +27,29 @@ You are an observer of trunk-based development practices.
 - Use code snippets and file references if necessary.
 - When you are referencing something prefer to call related change contributors by their names.
 """
+
 GPT_MODEL = "gpt-4o-mini"
 
-class MonkeyCheck:
-    def __init__(self, check_prompt, model=None, client=None, assistant_id=None, config=None):
+class AssistantRunner:
+    def __init__(self, prompt, model=None, client=None, assistant_id=None, config=None, thread_id=None):
         self.config = config or Config()
-        self.check_prompt = check_prompt
+        self.prompt = prompt
         self.model = model or GPT_MODEL
         self.client = client or OpenAI(api_key=self.config.open_api_key)
         self.assistant_id = assistant_id or self.config.assistant_id
         self._thread = None
+        self.thread_id = thread_id
 
     @property
     @retry(wait=wait_random_exponential(multiplier=1, max=60), stop=stop_after_attempt(5))
     def thread(self):
         if not self._thread:
-            self._thread = self.client.beta.threads.create()
-            print("Thread created", self._thread.id)
+            if self.thread_id:
+                self._thread = self.client.beta.threads.retrieve(self.thread_id)
+                print("Thread retrieved", self._thread.id)
+            else:
+                self._thread = self.client.beta.threads.create()
+                print("Thread created", self._thread.id)
         return self._thread
 
     @retry(wait=wait_random_exponential(multiplier=1, max=60), stop=stop_after_attempt(5))
@@ -60,7 +67,7 @@ class MonkeyCheck:
 
         self.client.beta.assistants.update(
             assistant_id=self.assistant_id,
-            instructions=COMMON_INSTRUCTION,
+            instructions=ASSISTANT_INSTRUCTION,
             model=self.model,
             tools=tools,
             tool_resources=tool_resources
@@ -79,7 +86,7 @@ class MonkeyCheck:
 
         self.send_message(
             role="user",
-            content=self.check_prompt
+            content=self.prompt
         )
 
         event_handler = MonkeyCheckEventHandler(client=self.client)
